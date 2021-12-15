@@ -1,6 +1,8 @@
 import 'package:bytebankk/models/contact.dart';
 import 'package:flutter/material.dart';
 
+import '../database/app_database.dart';
+
 class ContatosForm extends StatefulWidget {
   @override
   State<ContatosForm> createState() => _ContatosFormState();
@@ -55,7 +57,7 @@ class _ContatosFormState extends State<ContatosForm> {
                     final int? accountNumber =
                         int.tryParse(_accountNumberController.text);
                     final Contact newContact = Contact(0, name, accountNumber!);
-                    Navigator.pop(context, newContact);
+                    save(newContact).then((id) => Navigator.pop(context));
                   },
                 ),
               ),
