@@ -2,7 +2,7 @@ import 'package:bytebankk/database/app_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bytebankk/screens/dashboard.dart';
-import 'package:bytebankk/screens/contatos_form.dart';
+import 'package:bytebankk/screens/contacts_form.dart';
 
 import 'models/contact.dart';
 

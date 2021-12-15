@@ -3,12 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../database/app_database.dart';
 
-class ContatosForm extends StatefulWidget {
-  @override
-  State<ContatosForm> createState() => _ContatosFormState();
-}
+class ContactsForm extends StatelessWidget {
 
-class _ContatosFormState extends State<ContatosForm> {
   final TextEditingController _nameController = TextEditingController();
 
   final TextEditingController _accountNumberController =

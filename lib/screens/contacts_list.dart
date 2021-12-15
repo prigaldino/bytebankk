@@ -1,9 +1,16 @@
 import 'package:bytebankk/database/app_database.dart';
 import 'package:bytebankk/models/contact.dart';
-import 'package:bytebankk/screens/contatos_form.dart';
+import 'package:bytebankk/screens/contacts_form.dart';
 import 'package:flutter/material.dart';
 
-class ContactsList extends StatelessWidget {
+class ContactsList extends StatefulWidget {
+  @override
+  State<ContactsList> createState() => _ContactsListState();
+}
+
+class _ContactsListState extends State<ContactsList> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,30 +18,46 @@ class ContactsList extends StatelessWidget {
         title: Text('Contatos'),
       ),
       body: FutureBuilder<List<Contact>>(
-        initialData: [],
-        future: Future.delayed(Duration(seconds: 1)).then((value) => findAll()),
-        builder: (context, snapshot) {
-          final List<Contact> contacts = snapshot.data!;
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              final Contact contact = contacts[index];
-              return _ContactItem(contact);
-            },
-            itemCount: contacts.length,
-          );
-        },
-      ),
+          //initialData: [],
+          future: findAll(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                break;
+              case ConnectionState.waiting:
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Text('Loading'),
+                    ],
+                  ),
+                );
+                break;
+              case ConnectionState.active:
+                break;
+              case ConnectionState.done:
+                final List<Contact> contacts = snapshot.data!;
+                return ListView.builder(
+                  itemBuilder: (context, index) {
+                    final Contact contact = contacts[index];
+                    return _ContactItem(contact);
+                  },
+                  itemCount: contacts.length,
+                );
+                break;
+            }
+            return Text('Unknown error');
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context)
-              .push(
-                MaterialPageRoute(
-                  builder: (context) => ContatosForm(),
-                ),
-              )
-              .then(
-                (newContact) => debugPrint(newContact.toString()),
-              );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ContactsForm(),
+            ),
+          ).then((value) => setState(() {}));
         },
         child: Icon(
           Icons.add,
