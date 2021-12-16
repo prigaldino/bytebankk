@@ -1,8 +1,8 @@
-import 'package:bytebankk/database/app_database.dart';
-import 'package:bytebankk/models/contact.dart';
-import 'package:bytebankk/screens/contacts_form.dart';
 import 'package:flutter/material.dart';
 
+import 'package:bytebankk/database/dao/contact_dao.dart';
+import '../models/contact.dart';
+import './contacts_form.dart';
 class ContactsList extends StatefulWidget {
   @override
   State<ContactsList> createState() => _ContactsListState();
@@ -10,6 +10,7 @@ class ContactsList extends StatefulWidget {
 
 class _ContactsListState extends State<ContactsList> {
 
+  final ContactDao _dao = ContactDao();
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +19,8 @@ class _ContactsListState extends State<ContactsList> {
         title: Text('Contatos'),
       ),
       body: FutureBuilder<List<Contact>>(
-          //initialData: [],
-          future: findAll(),
+          initialData: [],
+          future: _dao.findAll(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -78,14 +79,11 @@ class _ContactItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           contact.name,
-          style: TextStyle(
-            fontSize: 24.00,
-          ),
+          style: TextStyle(fontSize: 24),
         ),
         subtitle: Text(contact.accountNumber.toString(),
-            style: TextStyle(
-              fontSize: 16.00,
-            )),
+            style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
