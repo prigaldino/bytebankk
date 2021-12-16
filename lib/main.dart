@@ -1,4 +1,6 @@
 import 'package:bytebankk/database/app_database.dart';
+import 'package:bytebankk/http/webclient.dart';
+import 'package:bytebankk/models/transaction.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/dashboard.dart';
@@ -8,9 +10,6 @@ import 'models/contact.dart';
 
 void main() {
   runApp(BytebankApp());
-  //save(Contact(1, 'Alex', 1000)).then((id) {
-  //  findAll().then((contacts) => debugPrint(contacts.toString()));
-  //});
 }
 
 class BytebankApp extends StatelessWidget {
