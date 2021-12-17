@@ -1,12 +1,7 @@
-import 'package:bytebankk/database/app_database.dart';
-import 'package:bytebankk/http/webclient.dart';
-import 'package:bytebankk/models/transaction.dart';
+import 'package:bytebankk/components/transaction_auth_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/dashboard.dart';
-import '../screens/contacts_form.dart';
-
-import 'models/contact.dart';
 
 void main() {
   runApp(BytebankApp());

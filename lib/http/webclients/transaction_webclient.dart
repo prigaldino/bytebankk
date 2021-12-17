@@ -2,32 +2,51 @@ import 'dart:convert';
 import 'package:bytebankk/models/transaction.dart';
 import 'package:http/http.dart';
 import '../webclient.dart';
+import '../webclient.dart';
 
 class TransactionWebClient {
-  
   Future<List<Transaction>> findAll() async {
-    var url = 'http://192.168.15.139:8080/transactions';
-    final Response response = await client.get(Uri.parse(url)).timeout(
-          Duration(seconds: 5),
-        );
-          final List<dynamic> decodedJson = jsonDecode(response.body); 
-      return decodedJson.map((dynamic json) {
-        return Transaction.fromJson(json);
-      }).toList();
+    final Response response = await client.get(Uri.parse(baseUrl));
+    final List<dynamic> decodedJson = jsonDecode(response.body);
+    return decodedJson.map((dynamic json) {
+      return Transaction.fromJson(json);
+    }).toList();
   }
 
-  Future<Transaction> save(Transaction transaction) async {  
+  Future<Transaction> save(
+    Transaction transaction,
+    String password,
+  ) async {
     final String transactionJson = jsonEncode(transaction.toJson());
 
-    var url = 'http://192.168.15.139:8080/transactions';
-    final Response response = await client.post(Uri.parse(url),
+    final Response response = await client.post(Uri.parse(baseUrl),
         headers: {
           'Content-Type': 'application/json',
-          'password': '1000',
+          'password': password,
         },
         body: transactionJson);
 
-    return Transaction.fromJson(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      return Transaction.fromJson(jsonDecode(response.body));
+    }
+
+    throw HttpException(_statusCodeResponses[response.statusCode]);
+    //_throwHttpError(response.statusCode);
   }
 
+/*
+  void _throwHttpError(int statusCode) {
+    throw Exception(_statusCodeResponses[statusCode]);
+  }
+*/
+  static final Map<int, String> _statusCodeResponses = {
+    400: 'There was an error submitting transaction',
+    401: 'Authentication failed',
+  };
+}
+
+class HttpException implements Exception {
+  final dynamic message;
+
+  HttpException([this.message]);
 }

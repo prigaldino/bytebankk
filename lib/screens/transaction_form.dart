@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:bytebankk/components/response_dialog.dart';
+import 'package:bytebankk/components/transaction_auth_dialog.dart';
 import 'package:bytebankk/http/webclients/transaction_webclient.dart';
 import 'package:bytebankk/models/contact.dart';
 import 'package:bytebankk/models/transaction.dart';
@@ -63,11 +67,16 @@ class _TransactionFormState extends State<TransactionForm> {
                       final double? value =
                           double.tryParse(_valueController.text);
                       final transactionCreated =
-                          Transaction(value!, widget.contact);
-                          _webClient.save(transactionCreated).then((transaction) {
-                            if(transaction != null) {
-                              Navigator.pop(context);
-                            }
+                          Transaction(value, widget.contact);
+
+                      showDialog(
+                          context: context,
+                          builder: (contextDialog) {
+                            return TransactionAuthDialog(
+                              onConfirm: (String password) {
+                                _save(transactionCreated, password, context);
+                              },
+                            );
                           });
                     },
                   ),
@@ -78,5 +87,46 @@ class _TransactionFormState extends State<TransactionForm> {
         ),
       ),
     );
+  }
+
+  void _save(Transaction transactionCreated, String password,
+      BuildContext context) async {
+    await _send(transactionCreated, password, context);
+  }
+
+  Future<void> _send(Transaction transactionCreated, String password,
+      BuildContext context) async {
+    final Transaction transaction =
+        await _webClient.save(transactionCreated, password).catchError((e) {
+      _showFailureMessage(context, e.message);
+    }, test: (e) => e is HttpException).catchError((e) {
+      _showFailureMessage(context, 'timeout submitting the transaction');
+    }, test: (e) => e is TimeoutException).catchError((e) {
+      _showFailureMessage(context, 'Unknown error');
+    });
+    _showSuccessfulMessage(transaction, context);
+  }
+
+  void _showFailureMessage(
+    BuildContext context,
+    String message,
+  ) {
+    showDialog(
+        context: context,
+        builder: (contextDialog) {
+          return FailureDialog(message);
+        });
+  }
+
+  Future<void> _showSuccessfulMessage(
+      Transaction transaction, BuildContext context) async {
+    if (transaction != null) {
+      await showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return SuccessDialog('successful transaction');
+          });
+      Navigator.pop(context);
+    }
   }
 }
