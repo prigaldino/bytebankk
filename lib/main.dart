@@ -1,17 +1,23 @@
-import 'package:bytebankk/components/transaction_auth_dialog.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:uuid/uuid.dart';
 import '../screens/dashboard.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  FirebaseCrashlytics.instance.setUserIdentifier('alura123');
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
   runApp(BytebankApp());
-  //save(Transaction(200.0, Contact(1, 'Alex', 2000))).then((transaction) => print(' salvou $transaction'));
-  //findAll().then((transactions) => print('new transactions ${transactions}'));
 }
 
 class BytebankApp extends StatelessWidget {
   // This widget is the root of your application.
-  @override
+  @override 
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
