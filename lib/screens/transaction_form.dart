@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bytebankk/components/progress.dart';
 import 'package:bytebankk/components/response_dialog.dart';
 import 'package:bytebankk/components/transaction_auth_dialog.dart';
@@ -8,6 +7,8 @@ import 'package:bytebankk/models/contact.dart';
 import 'package:bytebankk/models/transaction.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
+//import 'package:toast/toast.dart';
 import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -23,12 +24,13 @@ class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebClient _webClient = TransactionWebClient();
   final String transactionId = Uuid().v4();
-
   bool _sending = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('New transaction'),
       ),
@@ -80,7 +82,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       final double? value =
                           double.tryParse(_valueController.text);
                       final transactionCreated =
-                          Transaction(transactionId,value, widget.contact);
+                          Transaction(transactionId, value, widget.contact);
 
                       showDialog(
                           context: context,
@@ -158,7 +160,7 @@ class _TransactionFormState extends State<TransactionForm> {
             FirebaseCrashlytics.instance.setCustomKey('http_body', transactionCreated.toString());
             FirebaseCrashlytics.instance.recordError(e, null);
           }
-          _showFailureMessage(context);
+         // _showFailureMessage(context);
         }).whenComplete(() {
         setState(() {
           _sending = false;
@@ -171,12 +173,37 @@ class _TransactionFormState extends State<TransactionForm> {
     BuildContext context, {
     String message = 'Unkonown error',
   }) {
+
+    //_scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(message)));
+    
+    showDialog(
+  context: context,builder: (_) => NetworkGiffyDialog(
+    image: Image.asset('images/girError.gif'),
+    title: Text('Ops',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.w600)),
+    description:Text(message, textAlign: TextAlign.center,),
+    entryAnimation: EntryAnimation.TOP,
+    onOkButtonPressed: () {},
+  ) );
+
+    /*
     showDialog(
         context: context,
         builder: (contextDialog) {
           return FailureDialog(message);
         });
+        */
+
+
+    //showToast(message, gravity: Toast.BOTTOM);
   }
+
+/*   void showToast(String msg, {int duration = 5, required int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+  } */
 
 
 }
