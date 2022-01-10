@@ -1,6 +1,6 @@
 import 'package:bytebankk/screens/contacts_list.dart';
 import 'package:bytebankk/screens/transaction_list.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+//import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {

@@ -5,10 +5,7 @@ import 'package:bytebankk/components/transaction_auth_dialog.dart';
 import 'package:bytebankk/http/webclients/transaction_webclient.dart';
 import 'package:bytebankk/models/contact.dart';
 import 'package:bytebankk/models/transaction.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
-//import 'package:toast/toast.dart';
 import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -128,6 +125,28 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
+    Future<Transaction> _send(Transaction transactionCreated, String password,
+      BuildContext context) async {
+    setState(() {
+      _sending = true;
+    });
+    final Transaction transaction =
+        await _webClient.save(transactionCreated, password).catchError((e) {
+      _showFailureMessage(context, message: e.message);
+    }, test: (e) => e is HttpException).catchError((e) {
+      _showFailureMessage(context,
+          message: 'timeout submitting the transaction');
+    }, test: (e) => e is TimeoutException).catchError((e) {
+      _showFailureMessage(context);
+    }).whenComplete(() {
+      setState(() {
+        _sending = false;
+      });
+    });
+    return transaction;
+  }
+
+/*
   Future<void> _send(Transaction transactionCreated, String password,
       BuildContext context) async {
       setState(() {
@@ -168,13 +187,20 @@ class _TransactionFormState extends State<TransactionForm> {
     });
     _showSuccessfulMessage(transaction, context);
   }
+  */
 
   void _showFailureMessage(
     BuildContext context, {
     String message = 'Unkonown error',
   }) {
+        showDialog(
+        context: context,
+        builder: (contextDialog) {
+          return FailureDialog(message);
+        });
 
-    //_scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(message)));
+  /*  
+    _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(message)));
     
     showDialog(
   context: context,builder: (_) => NetworkGiffyDialog(
@@ -189,21 +215,12 @@ class _TransactionFormState extends State<TransactionForm> {
     onOkButtonPressed: () {},
   ) );
 
-    /*
-    showDialog(
-        context: context,
-        builder: (contextDialog) {
-          return FailureDialog(message);
-        });
-        */
-
-
-    //showToast(message, gravity: Toast.BOTTOM);
+  showToast(message, gravity: Toast.BOTTOM);
+*/
   }
 
-/*   void showToast(String msg, {int duration = 5, required int gravity}) {
+  /*   void showToast(String msg, {int duration = 5, required int gravity}) {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   } */
-
 
 }
