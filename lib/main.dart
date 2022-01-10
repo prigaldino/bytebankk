@@ -1,14 +1,16 @@
-import 'dart:async';
-import '../screens/dashboard.dart';
+import 'package:bytebankk/components/theme.dart';
+import 'package:bytebankk/screens/name.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
-
-// ...
-
 
 void main() async {
-  runApp(BytebankApp());
+
+// nova forma de utilizar o BlocObserver
+  BlocOverrides.runZoned(
+    () => runApp(BytebankApp()),
+    blocObserver: LogObserver(),
+  );
+
 
 /*
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,19 +31,24 @@ void main() async {
 */
 }
 
+class LogObserver extends BlocObserver {
+  @override
+  void onChange(BlocBase bloc, Change change) {
+    print("${bloc.runtimeType} > $change");
+    super.onChange(bloc, change);
+  }
+}
 class BytebankApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override 
   Widget build(BuildContext context) {
+  
+  //na prática evitar log do genero, pois pode vazar informações sensíveis para o log
+  //Bloc.observer = LogObserver(); // forma anteriora de utilização
+  
     return MaterialApp(
-      theme: ThemeData(
-          primaryColor: Colors.green[900],
-          accentColor: Color.fromRGBO(71, 161, 56, 1),
-          buttonTheme: ButtonThemeData(
-            buttonColor: Color.fromRGBO(71, 161, 56, 1),
-            textTheme: ButtonTextTheme.primary,
-          )),
-      home: Dashboard(),
+      theme: bytebankTheme,
+      home: NameContainer(),
     );
   }
 }

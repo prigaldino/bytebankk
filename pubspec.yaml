@@ -34,10 +34,12 @@ dependencies:
   http:
   http_interceptor: 
   uuid:
-  firebase_core:
+  flutter_bloc:
+
+  # firebase_core:
   # firebase_crashlytics:
-  toast:
-  giffy_dialog:
+  # toast:
+  # giffy_dialog:
 
 
   # The following adds the Cupertino Icons font to your application.
