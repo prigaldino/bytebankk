@@ -11,10 +11,7 @@ class NameContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NameCubit('Guilherme'),
-      child: NameView(),      
-    );
+    return NameView();
   }
 }
 
@@ -24,6 +21,9 @@ class NameView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _nameController.text = context.read<NameCubit>().state;
+
+
+
     final textTheme = Theme.of(context).textTheme;
    return Scaffold(
       appBar: AppBar(title: const Text('Change name')),

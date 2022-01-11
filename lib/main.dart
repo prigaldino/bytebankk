@@ -1,5 +1,5 @@
 import 'package:bytebankk/components/theme.dart';
-import 'package:bytebankk/screens/name.dart';
+import 'package:bytebankk/screens/dashboard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +48,7 @@ class BytebankApp extends StatelessWidget {
   
     return MaterialApp(
       theme: bytebankTheme,
-      home: NameContainer(),
+      home: DashboardContainer(),
     );
   }
 }
